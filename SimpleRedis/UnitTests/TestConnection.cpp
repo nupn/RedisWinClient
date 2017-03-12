@@ -1,9 +1,11 @@
 #include "TestConnection.h"
+#include "cstringt.h"
+#include "atlstr.h"
 
-/*
-void GetConnect(ConnectionValue& value, const CString fileName)
+ConnectionValue GetConnect(const CString fileName)
 {
 
+	ConnectionValue value;
 
 	TCHAR cbuf[MAX_PATH];
 	CString strSection, strKey;
@@ -30,10 +32,11 @@ void GetConnect(ConnectionValue& value, const CString fileName)
 	printf("auth : %s\n", value.auth.c_str());
 	printf("--------------------------\n");
 #endif
-
+	return value;
 };
-*/
+
 TestConnection::TestConnection()
+	: conn(GetConnect("..\\connect.ini"))
 {
 }
 
