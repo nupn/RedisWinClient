@@ -61,6 +61,16 @@ struct Command
         dest->writeArg(arg3);
     }
 
+	template<typename T1, typename T2, typename T3, typename T4, typename BufferType>
+	void execute(T1 const& arg1, T2 const& arg2, T3 const& arg3, T4 const& arg4, BufferType const& dest)
+	{
+		dest->write(header);
+		dest->writeArg(arg1);
+		dest->writeArg(arg2);
+		dest->writeArg(arg3);
+		dest->writeArg(arg4);
+	}
+
     std::string header;
 };
 
@@ -72,6 +82,15 @@ struct Command
         {} \
     }; \
     name ## Command _ ## name ## Command;
+
+#define DEFINE_COMMAND_OPTIONAL(name, cmd, args) \
+struct name ## Command : public Command \
+{ \
+	name ## Command() \
+	: Command(#cmd, args) \
+{} \
+}; \
+	name ## Command _ ## name ## Command;
 
 enum Type
 {
@@ -492,6 +511,10 @@ public:
     StringReply srandMember(const std::string& key);
 
     //TODO: all Z* functions
+	BoolReply zadd(const std::string& key, int rank, const std::string& value);
+	IntReply	zcard(const std::string& key);
+	IntReply	zcount(const std::string& key, const std::string& rangeStart, const std::string& rangeEnd);
+	MultiBulkEnumerator zrange(const std::string& key, const int& rangeStart, const int& rangeEnd, bool withScore = false);
 
     BoolReply hset(const std::string& key, const std::string& field, const std::string& value);
     StringReply hget(const std::string& key, const std::string& field);
@@ -590,18 +613,21 @@ private:
     DEFINE_COMMAND(SMembers, 1);
     DEFINE_COMMAND(SRandMember, 1);
 
-    DEFINE_COMMAND(ZAdd, 2);
+    DEFINE_COMMAND(ZAdd, 3);
+	DEFINE_COMMAND(ZCard, 1);
+	DEFINE_COMMAND(ZCount, 3);
+
+	DEFINE_COMMAND_OPTIONAL(ZRange_Noraml, ZRange, 3);
+	DEFINE_COMMAND_OPTIONAL(ZRange_WithOption, ZRange, 4);
+
     DEFINE_COMMAND(ZRem, 2);
     DEFINE_COMMAND(ZIncrBy, 3);
     DEFINE_COMMAND(ZRank, 2);
     DEFINE_COMMAND(ZRevRank, 2);
-    DEFINE_COMMAND(ZRange, 3);
     DEFINE_COMMAND(ZRevRange, 3);
     DEFINE_COMMAND(ZRangeByScore, 3);
-    DEFINE_COMMAND(ZCount, 3);
     DEFINE_COMMAND(ZRemRangeByRank, 3);
     DEFINE_COMMAND(ZRemRangeByScore, 3);
-    DEFINE_COMMAND(ZCard, 1);
     DEFINE_COMMAND(ZScore, 2);
     //TODO: zunionstore
     //TODO: zinterstore

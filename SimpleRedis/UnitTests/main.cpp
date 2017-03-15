@@ -19,7 +19,7 @@ void GlobalInit()
 	WSAStartup(version, &wsaData);
 }
 
-
+/*
 TEST_F(TestConnection, hellowWorld)
 {
 	conn.set("hello", "world");
@@ -397,6 +397,39 @@ TEST_F(TestConnection, pipelined)
 		EXPECT_TRUE((int)d == 2);
 		EXPECT_TRUE((int)c == 1);
 	}
+}
+*/
+TEST_F(TestConnection, ZSet)
+{
+	conn.del("Myzset");
+
+	EXPECT_TRUE((bool)conn.zadd("Myzset", 1, "one"));
+	EXPECT_TRUE((bool)conn.zadd("Myzset", 2, "two"));
+	EXPECT_TRUE((bool)conn.zadd("Myzset", 3, "three"));
+	
+	MultiBulkEnumerator result = conn.zrange("Myzset", 0, -1);
+	std::string str1;
+	std::string str2;
+	std::string str3;
+	EXPECT_TRUE(result.next(&str1));
+	EXPECT_TRUE(str1 == "one");
+	EXPECT_TRUE(result.next(&str2));
+	EXPECT_TRUE(str2 == "two");
+	EXPECT_TRUE(result.next(&str3));
+	EXPECT_TRUE(str3 == "three");
+
+	result = conn.zrange("Myzset", 0, -1, true);
+	EXPECT_TRUE(result.next(&str1));
+	EXPECT_TRUE(str1 == "one");
+	EXPECT_TRUE(result.next(&str2));
+	EXPECT_TRUE(str2 == "1");
+	EXPECT_TRUE(result.next(&str3));
+	EXPECT_TRUE(str3 == "two");
+
+	EXPECT_TRUE((int)conn.zcard("Myzset") == 3);
+	EXPECT_TRUE((int)conn.zcount("Myzset", "(1", "3") == 2);
+	EXPECT_TRUE((int)conn.zcount("Myzset", "-inf", "+inf") == 3);
+	
 }
 
 

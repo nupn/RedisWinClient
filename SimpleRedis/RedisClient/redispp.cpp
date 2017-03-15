@@ -417,6 +417,14 @@ private:
         ioStream->write(buffer->data(), buffer->length()); \
     } while(0)
 
+#define EXECUTE_COMMAND_SYNC4(cmd, arg1, arg2, arg3, arg4) \
+	do {\
+	buffer->resetToMark(); \
+	_ ## cmd ## Command.execute(arg1, arg2, arg3, arg4, buffer); \
+	ioStream->write(buffer->data(), buffer->length()); \
+	} while(0)
+
+
 NullReplyException::NullReplyException()
 : std::out_of_range("Casting null bulk reply to string")
 {
@@ -1094,6 +1102,38 @@ StringReply Connection::srandMember(const std::string& key)
 }
 
 //TODO: all Z* functions
+BoolReply Connection::zadd(const std::string& key, int rank, const std::string& value)
+{
+	EXECUTE_COMMAND_SYNC3(ZAdd, key, rank, value);
+	return BoolReply(this);
+}
+
+IntReply Connection::zcard(const std::string& key)
+{
+	EXECUTE_COMMAND_SYNC1(ZCard, key);
+	return IntReply(this);
+}
+
+IntReply Connection::zcount(const std::string& key, const std::string& rangeStart , const std::string& rangeEnd)
+{
+	EXECUTE_COMMAND_SYNC3(ZCount, key, rangeStart, rangeEnd);
+	return IntReply(this);
+}
+
+
+MultiBulkEnumerator Connection::zrange(const std::string& key,  const int& rangeStart, const int& rangeEnd,  bool withScore)
+{
+	if (!withScore)
+	{
+		EXECUTE_COMMAND_SYNC3(ZRange_Noraml, key, rangeStart, rangeEnd);
+	}
+	else
+	{
+		EXECUTE_COMMAND_SYNC4(ZRange_WithOption, key, rangeStart, rangeEnd, "WITHSCORES");
+	}
+	
+	return MultiBulkEnumerator(this);
+}
 
 BoolReply Connection::hset(const std::string& key, const std::string& field, const std::string& value)
 {
