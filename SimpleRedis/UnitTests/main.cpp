@@ -19,7 +19,6 @@ void GlobalInit()
 	WSAStartup(version, &wsaData);
 }
 
-/*
 TEST_F(TestConnection, hellowWorld)
 {
 	conn.set("hello", "world");
@@ -398,7 +397,7 @@ TEST_F(TestConnection, pipelined)
 		EXPECT_TRUE((int)c == 1);
 	}
 }
-*/
+
 TEST_F(TestConnection, ZSet)
 {
 	conn.del("Myzset");
@@ -430,6 +429,15 @@ TEST_F(TestConnection, ZSet)
 	EXPECT_TRUE((int)conn.zcount("Myzset", "(1", "3") == 2);
 	EXPECT_TRUE((int)conn.zcount("Myzset", "-inf", "+inf") == 3);
 	
+	result = conn.zrangebyscore("Myzset", "(1", "2");
+	EXPECT_TRUE(result.next(&str1));
+	EXPECT_TRUE(str1 == "two");
+
+	EXPECT_TRUE((int)conn.zrank("Myzset", "three") == 2);
+	EXPECT_TRUE((int)conn.zrank("Myzset", "two") == 1);
+
+	EXPECT_TRUE((std::string)conn.zscore("Myzset", "three") == "3");
+	EXPECT_TRUE((std::string)conn.zscore("Myzset", "two") == "2");
 }
 
 

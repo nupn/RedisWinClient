@@ -511,10 +511,14 @@ public:
     StringReply srandMember(const std::string& key);
 
     //TODO: all Z* functions
-	BoolReply zadd(const std::string& key, int rank, const std::string& value);
+	BoolReply	zadd(const std::string& key, int rank, const std::string& value);
 	IntReply	zcard(const std::string& key);
 	IntReply	zcount(const std::string& key, const std::string& rangeStart, const std::string& rangeEnd);
 	MultiBulkEnumerator zrange(const std::string& key, const int& rangeStart, const int& rangeEnd, bool withScore = false);
+
+	MultiBulkEnumerator zrangebyscore(const std::string& key, const std::string& rangeStart , const std::string& rangeEnd);
+	IntReply	zrank(const std::string& key, const std::string& field);
+	StringReply	zscore(const std::string& key, const std::string& field);
 
     BoolReply hset(const std::string& key, const std::string& field, const std::string& value);
     StringReply hget(const std::string& key, const std::string& field);
@@ -616,19 +620,21 @@ private:
     DEFINE_COMMAND(ZAdd, 3);
 	DEFINE_COMMAND(ZCard, 1);
 	DEFINE_COMMAND(ZCount, 3);
-
+	
 	DEFINE_COMMAND_OPTIONAL(ZRange_Noraml, ZRange, 3);
 	DEFINE_COMMAND_OPTIONAL(ZRange_WithOption, ZRange, 4);
+	DEFINE_COMMAND(ZRangeByScore, 3);
 
+	DEFINE_COMMAND(ZRank, 2);
+	DEFINE_COMMAND(ZScore, 2);
+
+	//TODO
     DEFINE_COMMAND(ZRem, 2);
     DEFINE_COMMAND(ZIncrBy, 3);
-    DEFINE_COMMAND(ZRank, 2);
     DEFINE_COMMAND(ZRevRank, 2);
     DEFINE_COMMAND(ZRevRange, 3);
-    DEFINE_COMMAND(ZRangeByScore, 3);
     DEFINE_COMMAND(ZRemRangeByRank, 3);
     DEFINE_COMMAND(ZRemRangeByScore, 3);
-    DEFINE_COMMAND(ZScore, 2);
     //TODO: zunionstore
     //TODO: zinterstore
 

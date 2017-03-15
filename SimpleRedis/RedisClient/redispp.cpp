@@ -1120,7 +1120,6 @@ IntReply Connection::zcount(const std::string& key, const std::string& rangeStar
 	return IntReply(this);
 }
 
-
 MultiBulkEnumerator Connection::zrange(const std::string& key,  const int& rangeStart, const int& rangeEnd,  bool withScore)
 {
 	if (!withScore)
@@ -1133,6 +1132,24 @@ MultiBulkEnumerator Connection::zrange(const std::string& key,  const int& range
 	}
 	
 	return MultiBulkEnumerator(this);
+}
+
+MultiBulkEnumerator Connection::zrangebyscore(const std::string& key, const std::string& rangeStart , const std::string& rangeEnd)
+{
+	EXECUTE_COMMAND_SYNC3(ZRangeByScore, key, rangeStart, rangeEnd);
+	return MultiBulkEnumerator(this);
+}
+
+IntReply Connection::zrank(const std::string& key, const std::string& field)
+{
+	EXECUTE_COMMAND_SYNC2(ZRank, key, field);
+	return IntReply(this);
+}
+
+StringReply Connection::zscore(const std::string& key, const std::string& field)
+{
+	EXECUTE_COMMAND_SYNC2(ZScore, key, field);
+	return StringReply(this);
 }
 
 BoolReply Connection::hset(const std::string& key, const std::string& field, const std::string& value)
