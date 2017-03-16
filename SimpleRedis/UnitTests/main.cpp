@@ -438,6 +438,14 @@ TEST_F(TestConnection, ZSet)
 
 	EXPECT_TRUE((std::string)conn.zscore("Myzset", "three") == "3");
 	EXPECT_TRUE((std::string)conn.zscore("Myzset", "two") == "2");
+
+	EXPECT_TRUE((bool)conn.zrem("Myzset", "two"));
+
+	result = conn.zrange("Myzset", 0, -1);
+	EXPECT_TRUE(result.next(&str1));
+	EXPECT_TRUE(str1 == "one");
+	EXPECT_TRUE(result.next(&str2));
+	EXPECT_TRUE(str2 == "three");
 }
 
 

@@ -519,6 +519,7 @@ public:
 	MultiBulkEnumerator zrangebyscore(const std::string& key, const std::string& rangeStart , const std::string& rangeEnd);
 	IntReply	zrank(const std::string& key, const std::string& field);
 	StringReply	zscore(const std::string& key, const std::string& field);
+	BoolReply	zrem(const std::string& key, const std::string& field);
 
     BoolReply hset(const std::string& key, const std::string& field, const std::string& value);
     StringReply hget(const std::string& key, const std::string& field);
@@ -627,9 +628,9 @@ private:
 
 	DEFINE_COMMAND(ZRank, 2);
 	DEFINE_COMMAND(ZScore, 2);
+	DEFINE_COMMAND(ZRem, 2);
 
 	//TODO
-    DEFINE_COMMAND(ZRem, 2);
     DEFINE_COMMAND(ZIncrBy, 3);
     DEFINE_COMMAND(ZRevRank, 2);
     DEFINE_COMMAND(ZRevRange, 3);

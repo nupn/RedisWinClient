@@ -1152,6 +1152,12 @@ StringReply Connection::zscore(const std::string& key, const std::string& field)
 	return StringReply(this);
 }
 
+BoolReply Connection::zrem(const std::string& key, const std::string& field)
+{
+	EXECUTE_COMMAND_SYNC2(ZRem, key, field);
+	return BoolReply(this);
+}
+
 BoolReply Connection::hset(const std::string& key, const std::string& field, const std::string& value)
 {
     EXECUTE_COMMAND_SYNC3(HSet, key, field, value);
